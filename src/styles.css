@@ -1364,6 +1364,30 @@ video {
   }
 }
 
+@keyframes mobile-card-edge-glow {
+  0% {
+    background-position: 0% 50%;
+    box-shadow:
+      inset 0 0 0 1px rgba(142, 167, 211, 0.12),
+      0 16px 38px rgba(0, 0, 0, 0.18);
+  }
+
+  48% {
+    background-position: 100% 50%;
+    box-shadow:
+      inset 0 0 0 1px rgba(208, 165, 107, 0.28),
+      0 18px 44px rgba(0, 0, 0, 0.22),
+      0 0 28px rgba(208, 165, 107, 0.08);
+  }
+
+  100% {
+    background-position: 0% 50%;
+    box-shadow:
+      inset 0 0 0 1px rgba(142, 167, 211, 0.12),
+      0 16px 38px rgba(0, 0, 0, 0.18);
+  }
+}
+
 @media (max-width: 900px) {
   body {
     min-width: 0;
@@ -1508,6 +1532,63 @@ video {
   .hero-metric {
     min-width: 0;
     padding: 12px 10px;
+  }
+
+  .brand-mark,
+  .hero-metric,
+  .identity-tag-card,
+  .contact-strip-item,
+  .contact-info-item,
+  .contact-qr {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background-image:
+      linear-gradient(var(--card-mobile-bg, rgba(12, 17, 26, 0.78)), var(--card-mobile-bg, rgba(12, 17, 26, 0.78))),
+      linear-gradient(120deg, rgba(142, 167, 211, 0.22), rgba(208, 165, 107, 0.36), rgba(142, 167, 211, 0.14));
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    background-size: 100% 100%, 240% 100%;
+    border-color: rgba(255, 255, 255, 0.08);
+    animation: mobile-card-edge-glow 8.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    transition:
+      transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 420ms ease,
+      box-shadow 420ms ease,
+      filter 420ms ease;
+  }
+
+  .brand-mark::after,
+  .hero-metric::after,
+  .identity-tag-card::after,
+  .contact-strip-item::after,
+  .contact-info-item::after,
+  .contact-qr::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    background:
+      conic-gradient(from 110deg, transparent 0 34%, rgba(208, 165, 107, 0.34) 42%, rgba(142, 167, 211, 0.3) 49%, transparent 60% 100%);
+    opacity: 0.34;
+    filter: blur(12px);
+    pointer-events: none;
+  }
+
+  .brand-mark:active,
+  .hero-metric:active,
+  .identity-tag-card:active,
+  .contact-strip-item:active,
+  .contact-info-item:active,
+  .contact-qr:active {
+    transform: translateY(-1px) scale(0.985);
+    border-color: rgba(208, 165, 107, 0.42);
+    box-shadow:
+      inset 0 0 0 1px rgba(208, 165, 107, 0.36),
+      0 0 26px rgba(208, 165, 107, 0.16),
+      0 18px 46px rgba(0, 0, 0, 0.28);
+    filter: brightness(1.06);
   }
 
   .hero-metric strong {

@@ -166,15 +166,34 @@ function BorderGlow({
     card.style.setProperty('--cursor-angle', `${angle.toFixed(3)}deg`)
   }, [getCursorAngle, getEdgeProximity])
 
-  const handlePointerLeave = useCallback(() => {
+  const handlePointerDown = useCallback((event) => {
     const card = cardRef.current
 
     if (!card) {
       return
     }
 
+    card.classList.add('touch-glow-active')
+    handlePointerMove(event)
+
+    const edgeValue = Number.parseFloat(card.style.getPropertyValue('--edge-proximity')) || 0
+    card.style.setProperty('--edge-proximity', `${Math.max(edgeValue, 88).toFixed(3)}`)
+  }, [handlePointerMove])
+
+  const releaseTouchGlow = useCallback(() => {
+    const card = cardRef.current
+
+    if (!card) {
+      return
+    }
+
+    card.classList.remove('touch-glow-active')
     card.style.setProperty('--edge-proximity', '0')
   }, [])
+
+  const handlePointerLeave = useCallback(() => {
+    releaseTouchGlow()
+  }, [releaseTouchGlow])
 
   useEffect(() => {
     if (!animated || !cardRef.current) {
@@ -229,7 +248,10 @@ function BorderGlow({
   return (
     <div
       ref={cardRef}
+      onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
+      onPointerUp={releaseTouchGlow}
+      onPointerCancel={releaseTouchGlow}
       onPointerLeave={handlePointerLeave}
       className={`border-glow-card ${className}`}
       style={{
