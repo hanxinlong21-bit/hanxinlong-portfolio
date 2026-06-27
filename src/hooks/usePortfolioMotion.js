@@ -17,10 +17,10 @@ function usePortfolioMotion(pageRef) {
     }
 
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-
     const compactViewportQuery = window.matchMedia('(max-width: 900px)')
+    const isCompact = compactViewportQuery.matches
 
-    if (mediaQuery.matches || compactViewportQuery.matches) {
+    if (mediaQuery.matches) {
       page.classList.add('motion-ready')
       return undefined
     }
@@ -34,15 +34,24 @@ function usePortfolioMotion(pageRef) {
 
       openingTimeline
         .set('.opening-screen', { autoAlpha: 1 })
+        .set('.opening-kicker', { yPercent: 105, opacity: 0 })
+        .set('.opening-title-line', {
+          yPercent: 118,
+          opacity: 0,
+          scaleX: isCompact ? 0.84 : 0.9,
+          transformOrigin: 'center center'
+        })
+        .set('.opening-subtitle-line', { yPercent: 92, opacity: 0 })
+        .set('.opening-line', { scaleX: 0, transformOrigin: 'left center' })
         .fromTo(
           '.opening-panel',
-          { scaleY: 1.08, transformOrigin: 'top center' },
-          { scaleY: 1, duration: 1.1, stagger: 0.06, ease: sweepEase }
+          { scaleY: isCompact ? 1.12 : 1.08, transformOrigin: 'top center' },
+          { scaleY: 1, duration: isCompact ? 1.18 : 1.1, stagger: isCompact ? 0.045 : 0.06, ease: sweepEase }
         )
         .to('.opening-kicker', {
           yPercent: 0,
           opacity: 1,
-          duration: 0.8,
+          duration: isCompact ? 0.92 : 0.8,
           ease: revealEase
         })
         .to(
@@ -50,7 +59,8 @@ function usePortfolioMotion(pageRef) {
           {
             yPercent: 0,
             opacity: 1,
-            duration: 1.35,
+            scaleX: 1,
+            duration: isCompact ? 1.55 : 1.35,
             ease: revealEase
           },
           '-=0.45'
@@ -60,14 +70,14 @@ function usePortfolioMotion(pageRef) {
           {
             yPercent: 0,
             opacity: 1,
-            duration: 1.12,
+            duration: isCompact ? 1.22 : 1.12,
             ease: revealEase
           },
           '-=0.86'
         )
         .fromTo(
           '.opening-line',
-          { scaleX: 0, transformOrigin: 'left center' },
+          { scaleX: 0 },
           { scaleX: 1, duration: 1.32, ease: sweepEase },
           '-=1'
         )
@@ -75,8 +85,8 @@ function usePortfolioMotion(pageRef) {
           '.opening-panel',
           {
             yPercent: -101,
-            stagger: 0.06,
-            duration: 1.7,
+            stagger: isCompact ? 0.045 : 0.06,
+            duration: isCompact ? 1.55 : 1.7,
             ease: sweepEase
           },
           '-=0.12'
@@ -109,39 +119,55 @@ function usePortfolioMotion(pageRef) {
       heroTimeline
         .fromTo(
           '.hero-image',
-          { scale: 1.12, xPercent: 1.2, filter: 'saturate(0.76) brightness(0.42)' },
+          {
+            scale: isCompact ? 1.16 : 1.12,
+            xPercent: isCompact ? 0 : 1.2,
+            filter: 'saturate(0.76) brightness(0.42)'
+          },
           {
             scale: 1,
             xPercent: 0,
             filter: 'saturate(0.9) brightness(0.64)',
-            duration: 3,
+            duration: isCompact ? 2.65 : 3,
             ease: smoothEase
           }
         )
         .fromTo(
           '.hero-word',
-          { xPercent: 8, yPercent: 0, opacity: 0, scale: 1.05, filter: 'blur(10px)' },
+          {
+            xPercent: isCompact ? -10 : 8,
+            yPercent: isCompact ? 4 : 0,
+            opacity: 0,
+            scale: isCompact ? 1.12 : 1.05,
+            filter: isCompact ? 'blur(5px)' : 'blur(10px)'
+          },
           {
             xPercent: 0,
             yPercent: 0,
             opacity: 1,
             scale: 1,
             filter: 'blur(0px)',
-            duration: 2.6,
+            duration: isCompact ? 2.05 : 2.6,
             ease: sweepEase
           },
           0.18
         )
         .fromTo(
           '.hero-title-line',
-          { yPercent: 112, opacity: 0, scaleY: 1.12, skewY: 1.5, transformOrigin: 'top center' },
+          {
+            yPercent: isCompact ? 118 : 112,
+            opacity: 0,
+            scaleY: isCompact ? 1.2 : 1.12,
+            skewY: isCompact ? 2.4 : 1.5,
+            transformOrigin: 'top center'
+          },
           {
             yPercent: 0,
             opacity: 1,
             scaleY: 1,
             skewY: 0,
             stagger: 0.08,
-            duration: 1.7
+            duration: isCompact ? 1.55 : 1.7
           },
           0.42
         )
@@ -153,8 +179,8 @@ function usePortfolioMotion(pageRef) {
         )
         .fromTo(
           '.hero-text, .hero-research-panel > *',
-          { y: 24, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1.35, stagger: 0.08, ease: smoothEase },
+          { y: isCompact ? 30 : 24, opacity: 0 },
+          { y: 0, opacity: 1, duration: isCompact ? 1.18 : 1.35, stagger: 0.08, ease: smoothEase },
           1.08
         )
         .fromTo(
@@ -199,11 +225,11 @@ function usePortfolioMotion(pageRef) {
               scaleX: 1,
               opacity: 1,
               xPercent: 0,
-              duration: 1.45,
+              duration: isCompact ? 1.18 : 1.45,
               ease: sweepEase,
               scrollTrigger: {
                 trigger: section,
-                start: 'top 80%',
+                start: isCompact ? 'top 88%' : 'top 80%',
                 once: true
               }
             }
@@ -213,18 +239,24 @@ function usePortfolioMotion(pageRef) {
         if (heading) {
           gsap.fromTo(
             heading,
-            { xPercent: -12, yPercent: 2, opacity: 0, scale: 1.06, filter: 'blur(8px)' },
+            {
+              xPercent: isCompact ? -18 : -12,
+              yPercent: isCompact ? 7 : 2,
+              opacity: 0,
+              scale: isCompact ? 1.09 : 1.06,
+              filter: isCompact ? 'blur(4px)' : 'blur(8px)'
+            },
             {
               xPercent: 0,
               yPercent: 0,
               opacity: 1,
               scale: 1,
               filter: 'blur(0px)',
-              duration: 1.7,
+              duration: isCompact ? 1.38 : 1.7,
               ease: sweepEase,
               scrollTrigger: {
                 trigger: section,
-                start: 'top 78%',
+                start: isCompact ? 'top 86%' : 'top 78%',
                 once: true
               }
             }
@@ -234,17 +266,17 @@ function usePortfolioMotion(pageRef) {
         if (titleLines.length) {
           gsap.fromTo(
             titleLines,
-            { yPercent: 108, opacity: 0, skewY: 1.5 },
+            { yPercent: isCompact ? 116 : 108, opacity: 0, skewY: isCompact ? 2.2 : 1.5 },
             {
               yPercent: 0,
               opacity: 1,
               skewY: 0,
-              duration: 1.4,
+              duration: isCompact ? 1.25 : 1.4,
               stagger: 0.08,
               ease: revealEase,
               scrollTrigger: {
                 trigger: section,
-                start: 'top 74%',
+                start: isCompact ? 'top 84%' : 'top 74%',
                 once: true
               }
             }
@@ -254,16 +286,16 @@ function usePortfolioMotion(pageRef) {
         if (infoBlocks.length) {
           gsap.fromTo(
             infoBlocks,
-            { y: 22, opacity: 0 },
+            { y: isCompact ? 26 : 22, opacity: 0 },
             {
               y: 0,
               opacity: 1,
-              duration: 1.18,
+              duration: isCompact ? 1.08 : 1.18,
               stagger: 0.08,
               ease: revealEase,
               scrollTrigger: {
                 trigger: section,
-                start: 'top 70%',
+                start: isCompact ? 'top 78%' : 'top 70%',
                 once: true
               }
             }
@@ -274,12 +306,13 @@ function usePortfolioMotion(pageRef) {
           gsap.fromTo(
             cards,
             {
-              y: 28,
+              y: isCompact ? 42 : 28,
               x: 0,
               opacity: 0,
-              rotateX: -3,
+              rotateX: isCompact ? 0 : -3,
               rotateY: 0,
-              scale: 0.985,
+              scale: isCompact ? 0.965 : 0.985,
+              clipPath: isCompact ? 'inset(10% 0% 14% 0%)' : 'inset(0% 0% 0% 0%)',
               transformOrigin: 'top center'
             },
             {
@@ -289,19 +322,20 @@ function usePortfolioMotion(pageRef) {
               rotateX: 0,
               rotateY: 0,
               scale: 1,
-              duration: 1.4,
-              stagger: 0.1,
+              clipPath: 'inset(0% 0% 0% 0%)',
+              duration: isCompact ? 1.2 : 1.4,
+              stagger: isCompact ? 0.08 : 0.1,
               ease: smoothEase,
               scrollTrigger: {
                 trigger: section,
-                start: 'top 66%',
+                start: isCompact ? 'top 76%' : 'top 66%',
                 once: true
               }
             }
           )
         }
 
-        if (image) {
+        if (image && !isCompact) {
           gsap.fromTo(
             image,
             { scale: 1.03, yPercent: 1 },
@@ -327,11 +361,11 @@ function usePortfolioMotion(pageRef) {
             {
               xPercent: 104,
               opacity: 0,
-              duration: 2.05,
+              duration: isCompact ? 1.38 : 2.05,
               ease: sweepEase,
               scrollTrigger: {
                 trigger: section,
-                start: 'top 80%',
+                start: isCompact ? 'top 86%' : 'top 80%',
                 once: true
               }
             }
@@ -347,16 +381,20 @@ function usePortfolioMotion(pageRef) {
         if (image) {
           gsap.fromTo(
             image,
-            { opacity: 0.8, scale: 1.006, filter: 'saturate(0.72) brightness(0.62) contrast(0.98)' },
+            {
+              opacity: isCompact ? 0.72 : 0.8,
+              scale: isCompact ? 1.08 : 1.006,
+              filter: 'saturate(0.72) brightness(0.62) contrast(0.98)'
+            },
             {
               opacity: 1,
-              scale: 1,
+              scale: isCompact ? 1.02 : 1,
               filter: 'saturate(0.8) brightness(0.7) contrast(0.98)',
-              duration: 1.85,
+              duration: isCompact ? 1.32 : 1.85,
               ease: smoothEase,
               scrollTrigger: {
                 trigger: card,
-                start: 'top 84%',
+                start: isCompact ? 'top 88%' : 'top 84%',
                 once: true
               }
             }
@@ -369,11 +407,11 @@ function usePortfolioMotion(pageRef) {
             { opacity: 0.72 },
             {
               opacity: 1,
-              duration: 1.4,
+              duration: isCompact ? 1.02 : 1.4,
               ease: smoothEase,
               scrollTrigger: {
                 trigger: card,
-                start: 'top 82%',
+                start: isCompact ? 'top 88%' : 'top 82%',
                 once: true
               }
             }
@@ -383,21 +421,25 @@ function usePortfolioMotion(pageRef) {
         if (revealLayer) {
           gsap.fromTo(
             revealLayer,
-            { opacity: 0.22, xPercent: 0 },
+            { opacity: isCompact ? 0.34 : 0.22, xPercent: 0 },
             {
               opacity: 0,
               xPercent: 110,
-              duration: 1.2,
-              ease: 'power2.out',
+              duration: isCompact ? 1.05 : 1.2,
+              ease: isCompact ? sweepEase : 'power2.out',
               scrollTrigger: {
                 trigger: card,
-                start: index < 2 ? 'top 86%' : 'top 88%',
+                start: isCompact ? 'top 90%' : index < 2 ? 'top 86%' : 'top 88%',
                 once: true
               }
             }
           )
         }
       })
+
+      if (isCompact) {
+        ScrollTrigger.refresh()
+      }
     }, page)
 
     return () => {

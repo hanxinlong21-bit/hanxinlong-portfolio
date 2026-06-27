@@ -1493,7 +1493,7 @@ video {
 
   .hero-metric {
     min-width: 0;
-    padding: 12px;
+    padding: 12px 10px;
   }
 
   .hero-metric strong {
@@ -1501,7 +1501,8 @@ video {
   }
 
   .hero-metric span {
-    font-size: 12px;
+    font-size: 11px;
+    line-height: 1.35;
   }
 
   .hero-spotlight {
@@ -1523,32 +1524,6 @@ video {
 
   .content-grainient {
     display: none;
-  }
-
-  .motion-ready .hero-word,
-  .motion-ready .hero-eyebrow,
-  .motion-ready .hero-text,
-  .motion-ready .hero-actions > *,
-  .motion-ready .hero-metric,
-  .motion-ready .hero-research-panel > *,
-  .motion-ready .hero-focus-item,
-  .motion-ready .section-heading-axis,
-  .motion-ready .section-backtitle,
-  .motion-ready .section-text,
-  .motion-ready .contact-copy-text,
-  .motion-ready .identity-tag-card,
-  .motion-ready .contact-strip-item,
-  .motion-ready .experience-glow,
-  .motion-ready .project-card,
-  .motion-ready .strength-glow,
-  .motion-ready .contact-info-item,
-  .motion-ready .contact-qr,
-  .motion-ready .portrait-reveal,
-  .motion-ready .project-image-reveal,
-  .motion-ready .hero-title-line,
-  .motion-ready .title-mask .title-line {
-    opacity: 1;
-    transform: none;
   }
 
   .section-block {
@@ -1776,7 +1751,7 @@ video {
   }
 
   .hero-metrics {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .profile-copy h2,
