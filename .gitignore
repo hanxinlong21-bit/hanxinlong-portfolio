@@ -1,0 +1,8 @@
+node_modules/
+dist/
+*.log
+
+# Local duplicate videos that are not referenced by the site.
+public/assets/project-gaofeng-video.mp4
+public/assets/project-hotpot-video.mp4
+public/assets/project-tianzhu-video.mp4
