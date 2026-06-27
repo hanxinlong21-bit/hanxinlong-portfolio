@@ -18,7 +18,9 @@ function usePortfolioMotion(pageRef) {
 
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
 
-    if (mediaQuery.matches) {
+    const compactViewportQuery = window.matchMedia('(max-width: 900px)')
+
+    if (mediaQuery.matches || compactViewportQuery.matches) {
       page.classList.add('motion-ready')
       return undefined
     }

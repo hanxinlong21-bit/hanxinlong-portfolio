@@ -17,13 +17,33 @@ function App() {
   const [activeProject, setActiveProject] = useState(null)
   const [contentVisible, setContentVisible] = useState(false)
   const pageRef = useRef(null)
+  const contentSectionsRef = useRef(null)
   const videoRef = useRef(null)
 
   usePortfolioMotion(pageRef)
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setContentVisible(true), 1200)
-    return () => window.clearTimeout(timer)
+    const contentSections = contentSectionsRef.current
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const isCompactViewport = window.matchMedia('(max-width: 900px)').matches
+
+    if (!contentSections || prefersReducedMotion || isCompactViewport) {
+      return undefined
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setContentVisible(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '420px 0px' }
+    )
+
+    observer.observe(contentSections)
+
+    return () => observer.disconnect()
   }, [])
 
   useEffect(() => {
@@ -190,7 +210,7 @@ function App() {
           </div>
         </section>
 
-        <div className="content-sections">
+        <div className="content-sections" ref={contentSectionsRef}>
           <div className="content-grainient" aria-hidden="true">
             {contentVisible ? (
               <Grainient
@@ -334,9 +354,9 @@ function App() {
                         className="project-image"
                         src={project.coverWebp || project.cover}
                         alt={`${project.title}封面`}
-                        loading={index < 2 ? 'eager' : 'lazy'}
+                        loading="lazy"
                         decoding="async"
-                        fetchPriority={index < 2 ? 'high' : 'auto'}
+                        fetchPriority="low"
                       />
                       <span className="project-image-reveal" aria-hidden="true" />
                     </div>
