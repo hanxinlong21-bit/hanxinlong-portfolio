@@ -1,544 +1,501 @@
-import { useEffect, useRef, useState } from 'react';
-import {
-  ArrowRight,
-  BookOpen,
-  BriefcaseBusiness,
-  Compass,
-  Drone,
-  Film,
-  GraduationCap,
-  Layers3,
-  Mail,
-  MapPin,
-  Phone,
-  Play,
-  Ruler,
-  ShieldCheck,
-  Sparkles,
-  Target,
-  Workflow,
-  X,
-} from 'lucide-react';
-import Grainient from './Grainient.jsx';
+import { useEffect, useRef, useState } from 'react'
+import BorderGlow from './components/BorderGlow'
+import Grainient from './components/Grainient'
+import { experiences, projects, strengths } from './data/portfolio'
+import usePortfolioMotion from './hooks/usePortfolioMotion'
 
-const profile = {
-  name: '韩欣龙',
-  title: '人居环境设计方向博士申请者',
-  phone: '13070707229',
-  email: 'hanxinlong21@gmail.com',
-  location: "Xi'an / China",
-};
+const heroImage = '/media/hero/hero-hotpot.webp'
+const contactQrImage = '/media/contact/wechat-qr.png'
 
-const navItems = [
-  { label: '首页', href: '#hero' },
-  { label: '经历', href: '#profile' },
-  { label: '项目', href: '#projects' },
-  { label: '优势', href: '#strengths' },
-  { label: '联系', href: '#contact' },
-];
-
-const identities = [
-  { icon: ShieldCheck, label: '中共党员' },
-  { icon: Drone, label: 'CAAC 无人机机长' },
-  { icon: BookOpen, label: '省级课题主持人' },
-  { icon: Target, label: '人居环境设计研究方向' },
-];
-
-const stats = [
-  { value: '02', label: '主持乡村振兴相关课题' },
-  { value: '02', label: '发表环境设计与乡村研究论文' },
-  { value: '05+', label: '国家级及省级竞赛荣誉' },
-];
-
-const timeline = [
-  {
-    icon: GraduationCap,
-    period: '2026.01 - 2027.01',
-    title: '英国萨福克大学 · 国际商业与管理 MSc',
-    detail: '预计 2027 年 5 月获得学位证书，并办理教育部留服认证。',
-  },
-  {
-    icon: GraduationCap,
-    period: '2021.09 - 2025.06',
-    title: '西京学院 设计艺术学院 · 环境设计 本科',
-    detail: '系统学习景观、室内、效果图表达与施工图绘制，形成设计研究与落地表达基础。',
-  },
-  {
-    icon: BriefcaseBusiness,
-    period: '2024.11 - 2025.12',
-    title: '西京学院 校长办公室 · 行政管理岗',
-    detail: '负责校级行政事务协调，熟悉高校运营管理机制，具备组织协调与沟通能力。',
-  },
-];
-
-const research = [
-  '《乡村振兴导向下陕西乡村环境整合设计实践研究--以响水堡为例》主持',
-  '《乡村振兴背景下渚山杨梅网络营销及推广创新模式》主持，获陕西省大创项目立项',
-  '第一作者发表《乡村振兴背景下环境设计理论与实践》',
-  '参与发表《乡村振兴背景下渚山杨梅网络营销及推广模式研究》',
-];
-
-const projects = [
-  {
-    title: '三生融合',
-    subtitle: '高峰村乡村景观设计',
-    type: '乡村景观设计',
-    year: '2025',
-    image: '/assets/project-gaofeng.jpg',
-    video: '/assets/project-gaofeng-talk.mp4',
-    text: '围绕产业、生态与生活空间的耦合关系，探索西北乡村景观的复合更新路径。',
-    tags: ['乡村振兴', '生态更新', '产业场景'],
-  },
-  {
-    title: '红影兴乡',
-    subtitle: '南社印记乡村更新',
-    type: '乡村景观改造',
-    year: '2024',
-    image: '/assets/project-nanshe.jpg',
-    video: '/assets/project-nanshe-talk.mp4',
-    text: '整合红色文化、村庄界面、公共活动与游线组织，建立具有在地记忆的村庄更新叙事。',
-    tags: ['红色文化', '公共空间', '场地叙事'],
-  },
-  {
-    title: '楼宇峥嵘',
-    subtitle: '天竺山道教文化主题山地公园',
-    type: '山地公园景观',
-    year: '2023',
-    image: '/assets/project-tianzhu.jpg',
-    video: '/assets/project-tianzhu-talk.mp4',
-    text: '将自然地形、宗教文化节点与游憩节奏编织为整体体验，回应山地公园的复合使用需求。',
-    tags: ['文化景观', '游线规划', '山地场地'],
-  },
-  {
-    title: '凤鸣岐山',
-    subtitle: '赤符火锅餐饮室内设计',
-    type: '餐饮室内空间',
-    year: '2024',
-    image: '/assets/project-hotpot.jpg',
-    video: '/assets/project-hotpot-talk.mp4',
-    text: '以神话与民间故事为概念线索，完成餐饮空间的动线、灯光、材料与氛围塑造。',
-    tags: ['室内设计', '材料表达', '品牌体验'],
-  },
-];
-
-const strengths = [
-  {
-    icon: Layers3,
-    title: '人居环境整合设计',
-    text: '能够从村庄肌理、公共空间、文化资源和使用人群出发，形成可落地的空间更新策略。',
-  },
-  {
-    icon: Compass,
-    title: '场地调研与问题识别',
-    text: '关注真实场地中的人、活动与空间关系，善于把调研观察转译为设计议题。',
-  },
-  {
-    icon: Drone,
-    title: '无人机航拍视角',
-    text: '具备 CAAC 无人机机长身份，可从航拍、场地识别和空间数据角度辅助前期研究。',
-  },
-  {
-    icon: Ruler,
-    title: '图纸与方案深化',
-    text: '熟悉 Photoshop、AutoCAD、3ds Max、SketchUp、Premiere 等工具，覆盖方案到表达的完整流程。',
-  },
-  {
-    icon: Workflow,
-    title: '跨学科策略思维',
-    text: '环境设计与国际商业管理背景结合，能够从设计、管理、政策和运营多维度理解项目。',
-  },
-  {
-    icon: Sparkles,
-    title: '竞赛表达与叙事',
-    text: '拥有多项国家级与省级竞赛经历，擅长把复杂方案组织为清晰、有张力的作品展示。',
-  },
-];
-
-const honors = [
-  '2024 全国大学生广告艺术大赛陕西赛区一等奖',
-  '2023 全国三维数字化创新设计大赛陕西赛区第一名',
-  '2022 全国大学生电子商务“三创赛”全国一等奖',
-  '2022 中国大学生计算机设计大赛西北地区二等奖',
-  '2021 中国第十四届残特奥会优秀志愿者',
-];
-
-function IconListItem({ icon: Icon, children }) {
-  return (
-    <span>
-      <Icon size={17} strokeWidth={1.7} />
-      {children}
-    </span>
-  );
-}
+const heroMetrics = [
+  { value: '02', label: '主持课题' },
+  { value: '02', label: '论文发表' },
+  { value: '04', label: '视频项目' }
+]
 
 function App() {
-  const [activeProject, setActiveProject] = useState(null);
-  const videoRef = useRef(null);
+  const [activeProject, setActiveProject] = useState(null)
+  const [contentVisible, setContentVisible] = useState(false)
+  const pageRef = useRef(null)
+  const videoRef = useRef(null)
+
+  usePortfolioMotion(pageRef)
 
   useEffect(() => {
-    if (!activeProject) return undefined;
+    const timer = window.setTimeout(() => setContentVisible(true), 1200)
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    if (!activeProject) {
+      return undefined
+    }
 
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
-        setActiveProject(null);
+        setActiveProject(null)
       }
-    };
+    }
 
-    document.body.classList.add('modal-open');
-    window.addEventListener('keydown', handleKeyDown);
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', handleKeyDown)
 
     return () => {
-      document.body.classList.remove('modal-open');
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [activeProject]);
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [activeProject])
 
   useEffect(() => {
-    if (!activeProject) return undefined;
+    if (!activeProject || !videoRef.current) {
+      return
+    }
 
-    let cancelled = false;
-    const timer = window.setTimeout(() => {
-      const video = videoRef.current;
-      if (!video || cancelled) return;
+    const video = videoRef.current
+    video.currentTime = 0
 
-      video.currentTime = 0;
-      const playPromise = video.play();
-      if (playPromise?.catch) {
-        playPromise.catch(() => {
-          if (!videoRef.current || cancelled) return;
-          videoRef.current.muted = true;
-          videoRef.current.play().catch(() => {});
-        });
+    video.play().catch(async () => {
+      video.muted = true
+      try {
+        await video.play()
+      } catch {
+        // Keep controls available even when the browser blocks autoplay.
       }
-    }, 80);
-
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timer);
-    };
-  }, [activeProject]);
+    })
+  }, [activeProject])
 
   return (
-    <main>
-      <header className="site-header" aria-label="主导航">
-        <a className="brand" href="#hero" aria-label="回到首页">
-          <strong>HX</strong>
-          <span>
-            <b>韩欣龙</b>
-            <small>Human Settlement</small>
+    <div ref={pageRef} className="portfolio-page">
+      <div className="page-noise" aria-hidden="true" />
+      <div className="opening-screen" aria-hidden="true">
+        <div className="opening-panels">
+          <span className="opening-panel" />
+          <span className="opening-panel" />
+          <span className="opening-panel" />
+          <span className="opening-panel" />
+        </div>
+        <div className="opening-copy">
+          <span className="opening-mask">
+            <span className="opening-kicker">HAN XINLONG / DOCTORAL PORTFOLIO</span>
           </span>
-        </a>
-        <nav aria-label="页面导航">
-          {navItems.map((item) => (
-            <a key={item.href} href={item.href}>
-              {item.label}
-            </a>
-          ))}
-        </nav>
-        <a className="header-cta" href={`mailto:${profile.email}`}>
-          <Mail size={17} strokeWidth={1.8} />
-          联系我
-        </a>
+          <span className="opening-mask">
+            <span className="opening-title-line">PORTFOLIO</span>
+          </span>
+          <span className="opening-mask">
+            <span className="opening-subtitle-line">HUMAN SETTLEMENTS DESIGN</span>
+          </span>
+        </div>
+        <span className="opening-line" />
+      </div>
+
+      <header className="site-nav">
+        <div className="content-frame nav-row">
+          <a className="brand" href="#top">
+            <div className="brand-shell">
+              <span className="brand-mark">P</span>
+              <div className="brand-copy">
+                <span className="brand-kicker">PORTFOLIO</span>
+                <span className="brand-name">韩欣龙 / 人居环境设计申请作品集</span>
+              </div>
+            </div>
+          </a>
+
+          <nav className="nav-links" aria-label="站点导航">
+            <a href="#profile">个人经历</a>
+            <a href="#projects">精选项目</a>
+            <a href="#strengths">个人优势</a>
+            <a href="#contact">联系</a>
+          </nav>
+
+          <a className="nav-cta" href="mailto:hanxinlong21@gmail.com">
+            联系我
+          </a>
+        </div>
       </header>
 
-      <section className="hero" id="hero">
-        <video className="hero-video" autoPlay muted loop playsInline preload="metadata" poster="/assets/hero-poster.jpg">
-          <source src="/assets/hero-video.mp4" type="video/mp4" />
-        </video>
-        <div className="hero-overlay" />
-        <div className="hero-grid" aria-hidden="true" />
-        <div className="hero-frame" aria-hidden="true" />
-
-        <div className="container hero-inner">
-          <div className="hero-kicker">
-            <span>Master Applicant · Portfolio</span>
-            <span>Portfolio 2026</span>
+      <main className="app-shell" id="top">
+        <section className="hero-section motion-section">
+          <div className="hero-media" aria-hidden="true">
+            <img
+              className="hero-image"
+              src={heroImage}
+              alt="赤符火锅餐饮空间效果图"
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+            />
           </div>
-          <div className="hero-copy">
-            <p className="eyebrow">Human Settlement / Landscape / Interior</p>
-            <h1>
-              人居环境设计
-              <span>从场地开始。</span>
-            </h1>
-            <p className="hero-lead">
-              韩欣龙 · 博士申请作品集。以乡村人居环境研究为起点，连接场地观察、文化叙事、空间组织与可持续更新策略。
-            </p>
-            <div className="hero-actions">
-              <a className="primary-button" href="#projects">
-                <ArrowRight size={18} strokeWidth={1.8} />
-                查看项目
-              </a>
-              <a className="secondary-button" href={`tel:${profile.phone}`}>
-                <Phone size={18} strokeWidth={1.8} />
-                联系我
-              </a>
+          <div className="hero-overlay" />
+
+          <div className="content-frame hero-grid">
+            <div className="hero-word" aria-hidden="true">
+              PORTFOLIO
             </div>
-          </div>
-
-          <aside className="hero-panel" aria-label="个人标签">
-            <p>Applicant Profile</p>
-            <h2>韩欣龙</h2>
-            <div className="identity-list">
-              {identities.map((item) => (
-                <IconListItem key={item.label} icon={item.icon}>
-                  {item.label}
-                </IconListItem>
-              ))}
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <div className="below-hero-stage">
-        <Grainient
-          className="below-hero-grainient"
-          color1="#3B82F6"
-          color2="#5227FF"
-          color3="#94add7"
-          timeSpeed={0.25}
-          colorBalance={0}
-          warpStrength={1}
-          warpFrequency={5}
-          warpSpeed={2}
-          warpAmplitude={50}
-          blendAngle={0}
-          blendSoftness={0.05}
-          rotationAmount={500}
-          noiseScale={2}
-          grainAmount={0.1}
-          grainScale={2}
-          grainAnimated={false}
-          contrast={1.5}
-          gamma={1}
-          saturation={1}
-          centerX={0}
-          centerY={0}
-          zoom={0.9}
-        />
-        <section className="section profile-section" id="profile">
-        <div className="container">
-          <div className="section-heading">
-            <p className="eyebrow">Profile</p>
-            <h2>从设计、管理与政策视角理解乡村人居环境问题。</h2>
-          </div>
-
-          <div className="profile-grid">
-            <div className="portrait-panel">
-              <img src="/assets/portrait.jpg" alt="韩欣龙头像" />
-              <div>
-                <strong>{profile.name}</strong>
-                <span>{profile.title}</span>
-              </div>
-            </div>
-
-            <div className="profile-content">
-              <p>
-                本科深耕环境设计领域，围绕陕西乡村聚落人居环境开展系统性研究，主持两项省级课题并发表学术论文。硕士就读于英国萨福克大学国际商业与管理专业，掌握变革管理与战略分析等理论工具。跨学科背景使我能够从“设计-管理-政策”多维视角审视人居环境问题。
-              </p>
-              <div className="contact-strip">
-                <a href={`mailto:${profile.email}`}>
-                  <Mail size={18} strokeWidth={1.8} />
-                  {profile.email}
-                </a>
-                <a href={`tel:${profile.phone}`}>
-                  <Phone size={18} strokeWidth={1.8} />
-                  {profile.phone}
-                </a>
-                <span>
-                  <MapPin size={18} strokeWidth={1.8} />
-                  {profile.location}
+            <div className="hero-copy">
+              <p className="eyebrow hero-eyebrow">PORTFOLIO / HUMAN SETTLEMENTS DESIGN</p>
+              <h1 className="hero-title">
+                <span className="hero-title-mask">
+                  <span className="hero-title-line">以空间研究回应</span>
                 </span>
+                <span className="hero-title-mask">
+                  <span className="hero-title-line">乡村人居环境的更新命题</span>
+                </span>
+              </h1>
+              <p className="hero-text">
+                韩欣龙，环境设计本科背景，关注西北乡村聚落更新、景观系统优化与空间叙事表达。
+                当前以跨学科视角衔接设计、管理与研究方法，申请人居环境设计方向博士研究生。
+              </p>
+
+              <div className="hero-actions">
+                <a className="primary-button" href="#projects">
+                  查看作品
+                </a>
+                <a className="secondary-button" href="#contact">
+                  联系方式
+                </a>
               </div>
-              <div className="stat-row">
-                {stats.map((item) => (
-                  <div className="stat-card" key={item.label}>
+
+              <div className="hero-metrics" aria-label="首页概览">
+                {heroMetrics.map((item) => (
+                  <div className="hero-metric" key={item.label}>
                     <strong>{item.value}</strong>
                     <span>{item.label}</span>
                   </div>
                 ))}
               </div>
             </div>
-          </div>
 
-          <div className="timeline">
-            {timeline.map((item) => {
-              const Icon = item.icon;
-              return (
-                <article className="timeline-item" key={item.title}>
-                  <div className="timeline-icon">
-                    <Icon size={21} strokeWidth={1.8} />
-                  </div>
-                  <span>{item.period}</span>
-                  <h3>{item.title}</h3>
-                  <p>{item.detail}</p>
-                </article>
-              );
-            })}
+            <aside className="hero-spotlight hero-research-panel">
+              <span className="hero-spotlight-label">Research Focus</span>
+              <h2 className="hero-spotlight-title">从真实场地问题出发，让研究与设计共同生成空间回应。</h2>
+              <p className="hero-spotlight-text">
+                关注乡村聚落更新、人居环境优化与空间叙事表达，在设计、研究与系统分析之间建立面向真实场地的问题意识。
+              </p>
+              <div className="hero-focus-list" aria-label="研究方向">
+                <div className="hero-focus-item">
+                  <strong>乡村聚落更新</strong>
+                  <span>Village Renewal</span>
+                </div>
+                <div className="hero-focus-item">
+                  <strong>人居环境优化</strong>
+                  <span>Habitat Strategy</span>
+                </div>
+                <div className="hero-focus-item">
+                  <strong>空间叙事表达</strong>
+                  <span>Spatial Narrative</span>
+                </div>
+              </div>
+            </aside>
           </div>
-
-          <div className="research-panel">
-            <div>
-              <p className="eyebrow">Research</p>
-              <h3>科研与竞赛经历</h3>
-            </div>
-            <div className="research-columns">
-              <ul>
-                {research.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-              <ul>
-                {honors.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
         </section>
 
-        <section className="section projects-section" id="projects">
-        <div className="container">
-          <div className="section-heading split">
-            <div>
-              <p className="eyebrow">Selected Projects</p>
-              <h2>精选项目</h2>
-            </div>
-            <p>
-              这些项目覆盖乡村景观、山地公园与餐饮室内空间，并已接入对应的 PPT 视频讲解。
-            </p>
+        <div className="content-sections">
+          <div className="content-grainient" aria-hidden="true">
+            {contentVisible ? (
+              <Grainient
+                className="content-grainient-canvas"
+                color1="#8a6558"
+                color2="#4d6d97"
+                color3="#121925"
+                timeSpeed={0.18}
+                colorBalance={0.02}
+                warpStrength={0.92}
+                warpFrequency={3.2}
+                warpSpeed={0.82}
+                warpAmplitude={72}
+                blendAngle={-10}
+                blendSoftness={0.26}
+                rotationAmount={180}
+                noiseScale={1.35}
+                grainAmount={0.08}
+                grainScale={1.66}
+                grainAnimated={false}
+                contrast={1.18}
+                gamma={0.98}
+                saturation={1.0}
+                centerX={0.1}
+                centerY={-0.04}
+                zoom={0.8}
+              />
+            ) : null}
+            <div className="content-grainient-mask" />
           </div>
 
-          <div className="project-grid">
-            {projects.map((project) => (
-              <button
-                className="project-card"
-                type="button"
-                onClick={() => setActiveProject(project)}
-                key={project.title}
-                aria-label={`播放${project.title}项目讲解视频`}
-              >
-                <img src={project.image} alt={`${project.title} ${project.subtitle}`} loading="lazy" decoding="async" />
-                <div className="project-shade" />
-                <div className="project-topline">
-                  <span>{project.type}</span>
-                  <span>{project.year}</span>
+          <div className="content-sections-inner">
+            <section className="section-block profile-section motion-section" id="profile">
+              <div className="content-frame profile-grid">
+                <div className="profile-visual">
+                  <div className="portrait-shell">
+                    <img className="portrait-image" src="/media/profile/portrait.jpg" alt="韩欣龙证件照" />
+                  </div>
+                  <div className="identity-tags" aria-label="身份与背景">
+                    <div className="identity-tag-card">
+                      <small>政治身份</small>
+                      <strong>中共党员</strong>
+                    </div>
+                    <div className="identity-tag-card">
+                      <small>技术资质</small>
+                      <strong>CAAC 无人机机长</strong>
+                    </div>
+                    <div className="identity-tag-card">
+                      <small>专业基础</small>
+                      <strong>环境设计背景</strong>
+                    </div>
+                  </div>
                 </div>
-                <div className="project-play-chip">
-                  <span>
-                    <Play size={15} fill="currentColor" strokeWidth={1.8} />
-                  </span>
-                  PPT 讲解
-                </div>
-                <div className="project-content">
-                  <h3>{project.title}</h3>
-                  <strong>{project.subtitle}</strong>
-                  <p>{project.text}</p>
-                  <div className="tag-row">
-                    {project.tags.map((tag) => (
-                      <span key={tag}>{tag}</span>
+
+                <div className="profile-copy">
+                  <div className="section-heading-copy section-heading-about">
+                    <span className="section-heading-axis" aria-hidden="true" />
+                    <span className="section-backtitle">ABOUT</span>
+                    <p className="eyebrow">个人经历 / About</p>
+                    <h2 className="section-title-profile">
+                      <span className="title-mask">
+                        <span className="title-line">在设计、研究与管理之间建立</span>
+                      </span>
+                      <span className="title-mask">
+                        <span className="title-line">对人居环境问题的综合判断。</span>
+                      </span>
+                    </h2>
+                  </div>
+                  <p className="section-text">
+                    本科阶段深耕环境设计，围绕陕西乡村聚落人居环境开展系统性研究，主持两项课题并发表论文；
+                    硕士阶段转入国际商业与管理学习，以变革管理与战略分析方法补强空间议题的系统视角。
+                  </p>
+                  <div className="contact-strip" aria-label="联系方式">
+                    <a className="contact-strip-item" href="mailto:hanxinlong21@gmail.com">
+                      <span className="contact-strip-label">邮箱</span>
+                      <span className="contact-strip-value">hanxinlong21@gmail.com</span>
+                    </a>
+                    <a className="contact-strip-item" href="tel:13070707229">
+                      <span className="contact-strip-label">电话</span>
+                      <span className="contact-strip-value">13070707229</span>
+                    </a>
+                  </div>
+                  <div className="experience-list">
+                    {experiences.map((item) => (
+                      <BorderGlow
+                        key={item.period + item.title}
+                        className="experience-glow"
+                        edgeSensitivity={42}
+                        glowColor="30 65 72"
+                        backgroundColor="rgba(10, 13, 20, 0.84)"
+                        borderRadius={28}
+                        glowRadius={24}
+                        glowIntensity={0.7}
+                        coneSpread={22}
+                        animated={false}
+                        fillOpacity={0.18}
+                        colors={['#d0a56b', '#6f88b0', '#4f3841']}
+                      >
+                        <article className="experience-item">
+                          <span className="experience-period">{item.period}</span>
+                          <div>
+                            <h3>{item.title}</h3>
+                            <p>{item.subtitle}</p>
+                            <small>{item.note}</small>
+                          </div>
+                        </article>
+                      </BorderGlow>
                     ))}
                   </div>
                 </div>
-              </button>
-            ))}
+              </div>
+            </section>
+
+            <section className="section-block projects-section motion-section" id="projects">
+              <div className="content-frame section-header">
+                <div className="section-heading-copy section-heading-works">
+                  <span className="section-heading-axis" aria-hidden="true" />
+                  <span className="section-backtitle">WORKS</span>
+                  <p className="eyebrow">精选项目 / Selected Works</p>
+                  <h2 className="section-title-projects">
+                    <span className="title-mask">
+                      <span className="title-line">点击卡片，</span>
+                    </span>
+                    <span className="title-mask">
+                      <span className="title-line">即可弹出对应讲解视频。</span>
+                    </span>
+                  </h2>
+                </div>
+              </div>
+
+              <div className="content-frame project-grid">
+                {projects.map((project, index) => (
+                  <button
+                    className={`project-card project-card-${(index % 4) + 1}`}
+                    key={project.id}
+                    onClick={() => setActiveProject(project)}
+                    type="button"
+                  >
+                    <div className="project-image-wrap">
+                      <img
+                        className="project-image"
+                        src={project.coverWebp || project.cover}
+                        alt={`${project.title}封面`}
+                        loading={index < 2 ? 'eager' : 'lazy'}
+                        decoding="async"
+                        fetchPriority={index < 2 ? 'high' : 'auto'}
+                      />
+                      <span className="project-image-reveal" aria-hidden="true" />
+                    </div>
+                    <div className="project-scrim" />
+                    <div className="project-body">
+                      <div className="project-meta">
+                        <span>{project.category}</span>
+                        <span>{project.year}</span>
+                      </div>
+                      <div className="project-copy">
+                        <h3>{project.title}</h3>
+                        <p>{project.subtitle}</p>
+                        <small>{project.summary}</small>
+                      </div>
+                      <div className="project-footer">
+                        <div className="project-tags">
+                          {project.tags.map((tag) => (
+                            <span key={tag}>{tag}</span>
+                          ))}
+                        </div>
+                        <span className="project-watch">点击观看讲解视频</span>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <section className="section-block strengths-section motion-section" id="strengths">
+              <div className="content-frame section-header">
+                <div className="section-heading-copy section-heading-strengths">
+                  <span className="section-heading-axis" aria-hidden="true" />
+                  <span className="section-backtitle">STRENGTHS</span>
+                  <p className="eyebrow">个人优势 / Strengths</p>
+                  <h2 className="section-title-strengths">
+                    <span className="title-mask">
+                      <span className="title-line">更关注问题的复杂性，</span>
+                    </span>
+                    <span className="title-mask">
+                      <span className="title-line">也更在意设计如何真正被理解与落地。</span>
+                    </span>
+                  </h2>
+                </div>
+              </div>
+              <div className="content-frame strength-grid">
+                {strengths.map((item, index) => (
+                  <BorderGlow
+                    key={item.title}
+                    className="strength-glow"
+                    edgeSensitivity={40}
+                    glowColor="212 52 72"
+                    backgroundColor="rgba(10, 13, 20, 0.82)"
+                    borderRadius={28}
+                    glowRadius={22}
+                    glowIntensity={0.82}
+                    coneSpread={24}
+                    animated={false}
+                    fillOpacity={0.2}
+                    colors={['#7f9fd0', '#d0a56b', '#40536f']}
+                  >
+                        <article className="strength-card">
+                          <span className="strength-index">0{index + 1}</span>
+                          <h3>{item.title}</h3>
+                          <p>{item.detail}</p>
+                        </article>
+                      </BorderGlow>
+                ))}
+              </div>
+            </section>
+
+            <section className="contact-section motion-section" id="contact">
+              <div className="content-frame contact-grid">
+                <div className="contact-copy">
+                  <div className="section-heading-copy section-heading-contact">
+                    <span className="section-heading-axis" aria-hidden="true" />
+                    <span className="section-backtitle">CONTACT</span>
+                    <p className="eyebrow">Contact / Closing Page</p>
+                    <h2 className="contact-title">
+                      <span className="title-mask">
+                        <span className="title-line">期待在更深入的研究与设计实践中，</span>
+                      </span>
+                      <span className="title-mask">
+                        <span className="title-line">继续回应乡村人居环境的真实议题。</span>
+                      </span>
+                    </h2>
+                  </div>
+                  <p className="contact-copy-text">
+                    如蒙审阅，若需进一步了解研究设想、项目细节或相关材料，可通过右侧方式与我联系。
+                  </p>
+                </div>
+                <div className="contact-card">
+                  <div className="contact-info-list">
+                    <div className="contact-info-item">
+                      <span className="contact-info-label">Email</span>
+                      <a href="mailto:hanxinlong21@gmail.com">hanxinlong21@gmail.com</a>
+                    </div>
+                    <div className="contact-info-item">
+                      <span className="contact-info-label">Phone</span>
+                      <a href="tel:13070707229">13070707229</a>
+                    </div>
+                    <div className="contact-info-item">
+                      <span className="contact-info-label">Location</span>
+                      <span>山东潍坊</span>
+                    </div>
+                  </div>
+                  <div className="contact-qr">
+                    <img src={contactQrImage} alt="微信二维码" loading="lazy" decoding="async" />
+                    <span>微信扫码联系</span>
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
-        </section>
-
-        <section className="section strengths-section" id="strengths">
-        <div className="container">
-          <div className="section-heading split">
-            <div>
-              <p className="eyebrow">Capability</p>
-              <h2>个人优势</h2>
-            </div>
-            <p>
-              能力结构覆盖前期研究、概念生成、视觉表达、方案深化与项目推进，适合景观与室内交叉型人居环境课题。
-            </p>
-          </div>
-
-          <div className="strength-grid">
-            {strengths.map((item) => {
-              const Icon = item.icon;
-              return (
-                <article className="strength-card" key={item.title}>
-                  <Icon size={25} strokeWidth={1.7} />
-                  <h3>{item.title}</h3>
-                  <p>{item.text}</p>
-                </article>
-              );
-            })}
-          </div>
-        </div>
-        </section>
-      </div>
-
-      <section className="contact-section" id="contact">
-        <div className="contact-media" aria-hidden="true" />
-        <div className="contact-overlay" aria-hidden="true" />
-        <div className="container contact-inner">
-          <p className="eyebrow">Contact</p>
-          <h2>感谢审阅。期待有机会进一步汇报我的研究构想。</h2>
-          <p>
-            拟攻读西安交通大学人居环境与建筑工程学院博士，聚焦西北地区乡村人居环境品质提升与可持续规划策略研究。
-          </p>
-          <div className="contact-actions">
-            <a className="primary-button" href={`mailto:${profile.email}`}>
-              <Mail size={18} strokeWidth={1.8} />
-              {profile.email}
-            </a>
-            <a className="secondary-button" href={`tel:${profile.phone}`}>
-              <Phone size={18} strokeWidth={1.8} />
-              {profile.phone}
-            </a>
-          </div>
-          <footer>
-            <span>{profile.name}</span>
-            <span>Human Settlement Design Portfolio</span>
-            <span>{profile.location}</span>
-          </footer>
-        </div>
-      </section>
+      </main>
 
       {activeProject && (
-        <div className="video-modal" role="presentation" onClick={() => setActiveProject(null)}>
+        <div
+          className="video-modal"
+          onClick={() => setActiveProject(null)}
+          role="presentation"
+        >
           <div
             className="video-dialog"
+            onClick={(event) => event.stopPropagation()}
             role="dialog"
             aria-modal="true"
-            aria-label={`${activeProject.title}项目讲解视频`}
-            onClick={(event) => event.stopPropagation()}
+            aria-labelledby="video-dialog-title"
           >
-            <button className="video-close" type="button" onClick={() => setActiveProject(null)} aria-label="关闭视频">
-              <X size={22} strokeWidth={1.8} />
-            </button>
-            <div className="video-info">
-              <p>
-                <Film size={16} strokeWidth={1.8} />
-                PPT Video
-              </p>
-              <h3>{activeProject.title}</h3>
-              <span>{activeProject.subtitle}</span>
+            <div className="video-dialog-head">
+              <div>
+                <p>{activeProject.category}</p>
+                <h3 id="video-dialog-title">{activeProject.title}</h3>
+              </div>
+              <button
+                className="close-button"
+                onClick={() => setActiveProject(null)}
+                type="button"
+              >
+                关闭
+              </button>
             </div>
-            <div className="video-frame">
+            <div className="video-stage">
               <video
+                key={activeProject.id}
                 ref={videoRef}
-                key={activeProject.video}
+                className="project-video"
+                src={activeProject.video}
                 controls
                 autoPlay
                 playsInline
-                preload="auto"
-                poster={activeProject.image}
-              >
-                <source src={activeProject.video} type="video/mp4" />
-              </video>
+                preload="metadata"
+              />
             </div>
           </div>
         </div>
       )}
-    </main>
-  );
+    </div>
+  )
 }
 
-export default App;
+export default App

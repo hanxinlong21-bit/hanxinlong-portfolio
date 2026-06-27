@@ -1,5 +1,0 @@
-public/assets/hero-video.mp4 filter=lfs diff=lfs merge=lfs -text
-public/assets/project-gaofeng-talk.mp4 filter=lfs diff=lfs merge=lfs -text
-public/assets/project-nanshe-talk.mp4 filter=lfs diff=lfs merge=lfs -text
-public/assets/project-tianzhu-talk.mp4 filter=lfs diff=lfs merge=lfs -text
-public/assets/project-hotpot-talk.mp4 filter=lfs diff=lfs merge=lfs -text
