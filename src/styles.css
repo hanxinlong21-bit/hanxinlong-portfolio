@@ -1350,6 +1350,20 @@ video {
   }
 }
 
+@keyframes mobile-grainient-drift {
+  0% {
+    transform: translate3d(-2%, -1%, 0) scale(1.02);
+  }
+
+  50% {
+    transform: translate3d(2%, 1.6%, 0) scale(1.08);
+  }
+
+  100% {
+    transform: translate3d(-2%, -1%, 0) scale(1.02);
+  }
+}
+
 @media (max-width: 900px) {
   body {
     min-width: 0;
@@ -1524,6 +1538,49 @@ video {
 
   .content-grainient {
     display: none;
+  }
+
+  .content-sections {
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 12% 3%, rgba(111, 142, 202, 0.26), transparent 30%),
+      radial-gradient(circle at 88% 16%, rgba(208, 165, 107, 0.2), transparent 28%),
+      linear-gradient(180deg, #07090d 0%, #0a0d14 46%, #05070a 100%);
+  }
+
+  .content-sections::before,
+  .content-sections::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .content-sections::before {
+    inset: -6% -34%;
+    z-index: 0;
+    background:
+      radial-gradient(circle at 18% 8%, rgba(142, 167, 211, 0.42) 0%, rgba(142, 167, 211, 0.18) 18%, transparent 38%),
+      radial-gradient(circle at 82% 18%, rgba(208, 165, 107, 0.32) 0%, rgba(208, 165, 107, 0.12) 20%, transparent 36%),
+      radial-gradient(circle at 46% 42%, rgba(70, 94, 137, 0.32) 0%, rgba(70, 94, 137, 0.12) 24%, transparent 44%),
+      radial-gradient(circle at 18% 78%, rgba(138, 101, 88, 0.28) 0%, rgba(138, 101, 88, 0.1) 22%, transparent 42%);
+    filter: saturate(1.08) blur(2px);
+    opacity: 0.86;
+    mix-blend-mode: screen;
+    animation: mobile-grainient-drift 26s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    will-change: transform;
+  }
+
+  .content-sections::after {
+    inset: 0;
+    z-index: 0;
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 0, transparent 0.8px),
+      radial-gradient(circle at 70% 40%, rgba(255, 255, 255, 0.08) 0, transparent 0.8px);
+    background-size: 46px 46px, 46px 46px, 19px 19px, 23px 23px;
+    opacity: 0.18;
+    mix-blend-mode: screen;
   }
 
   .section-block {
